@@ -82,9 +82,11 @@ Then Why not access the S3 Static website hosting endpoint?
 
 
 
-### How to deploy the artifacts to multiple S3 bucket using same Pipeline
+### How to deploy the artifacts to multiple S3 bucket using same Pipeline?
 
-You can create multiple S3 bucket with public access enabled, then create a static website hosting
+You can create multiple S3 bucket with public access enabled, then create a static website hosting, and add a bucket policy
+
+Dont forget to update the Deploy-Policy for new S3 bucket in CodePipeline Service role Policy
 
 To add this deployment in Pipeline to edit the Pipeline and edit the stage to add a new action in Deploy stage
 
