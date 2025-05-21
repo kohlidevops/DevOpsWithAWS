@@ -82,6 +82,26 @@ Then Why not access the S3 Static website hosting endpoint?
 
 
 
+### How to deploy the artifacts to multiple S3 bucket using same Pipeline
+
+You can create multiple S3 bucket with public access enabled, then create a static website hosting
+
+To add this deployment in Pipeline to edit the Pipeline and edit the stage to add a new action in Deploy stage
+
+
+![image](https://github.com/user-attachments/assets/ba301017-c050-4f10-b4b7-177c033a1e81)
+
+
+To uopdate the Deploy Action and update it with Pipeline > Then start the Pipeline manually
+
+
+![image](https://github.com/user-attachments/assets/93de41ff-05c8-4146-a488-8d75a542d140)
+
+
+To manually start the Pipeline by clicking the Release Change option
+
+
+![image](https://github.com/user-attachments/assets/3a4ea8c0-2d3c-477c-a875-3c2d1eef2f1b)
 
 
 
