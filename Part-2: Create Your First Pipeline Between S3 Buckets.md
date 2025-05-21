@@ -39,6 +39,49 @@ To upload the my-website.zip to source bucket
 ![image](https://github.com/user-attachments/assets/32a8ab42-6090-4a3b-be95-0047e4dfe704)
 
 
+## To create a CodePipeline
+
+To create a codepipeline with build custom pipeline
+
+
+![image](https://github.com/user-attachments/assets/be1e31c9-1ce5-44b4-9bbb-8f4bd784d453)
+
+
+Give a Pipeline name and allow to create a new service role
+
+
+![image](https://github.com/user-attachments/assets/6188a4a9-1fde-4969-9433-b417deb7177c)
+
+
+To add a source stage as S3 bucket and place the object key
+
+To skip Build and Test stage as we are not using
+
+To select the Deploy stage > Deploy provide should be S3 prod bucket and file should extract before deploy
+
+
+![image](https://github.com/user-attachments/assets/4059c332-b969-43dd-8556-06961c6104d4)
+
+
+Review and create a Pipeline > The Pipeline should trigger once it is created.
+
+
+![image](https://github.com/user-attachments/assets/b009fb04-f7f2-4ae4-9bda-8afbcacb379b)
+
+
+The files are extracted and deployed into prod buckets
+
+
+![image](https://github.com/user-attachments/assets/cf5ac6dc-afaf-43c9-b571-43f67ebe4ce5)
+
+
+Then Why not access the S3 Static website hosting endpoint?
+
+
+![image](https://github.com/user-attachments/assets/a78caa1c-ca17-44f7-879e-5cb919aa60cf)
+
+
+
 
 
 
