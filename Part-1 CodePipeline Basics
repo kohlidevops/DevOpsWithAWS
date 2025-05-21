@@ -1,0 +1,14 @@
+# AWS CodePipeline basics
+
+## What is CI/CD?
+
+### Continuous Integration
+
+In Conctinuous Integration (CI), developers commit the code changes frequently, several times a day, to the code repository.
+
+In every code submission, automated builds and unit tests are run.
+
+So Integration errors are detected earlier and can be eliminated before the deployment.
+
+
+
