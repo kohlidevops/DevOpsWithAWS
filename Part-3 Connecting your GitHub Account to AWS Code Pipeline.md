@@ -164,6 +164,18 @@ If you access the S3 static website hosting
 <img width="690" alt="image" src="https://github.com/user-attachments/assets/c09d8888-13c7-4b6f-9f60-a7f3846b8675" />
 
 
+### Triggering your Code Pipleine with Git pushes (GitHub)
+
+Just do some changes in your repository and lets check whether the Code Pipeline has been triggered and updated code has been deployed on S3 bucket
+
+
+<img width="686" alt="image" src="https://github.com/user-attachments/assets/a4f94ed0-0a70-44c3-bacc-bec0e2f2c7c9" />
+
+
+The static website hosting version has been changed to 2.0
+
+
+<img width="709" alt="image" src="https://github.com/user-attachments/assets/cc45af9d-b07f-4260-8f23-f17aebb431fe" />
 
 
 
