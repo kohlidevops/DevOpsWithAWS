@@ -82,3 +82,89 @@ Users can access the site hosted in the S3 bucket
 A simple, automated CI/CD setup for static website hosting using GitHub, CodePipeline, and Amazon S3.
 
 
+### Create a Production bucket
+
+To create a production bucket with public access enabled - This is because anyone can access it from anywhere as it is website hosting
+
+
+![image](https://github.com/user-attachments/assets/f508b2e4-113b-4990-aaf2-8a2d0f6ba4c3)
+
+
+To make this bucket host static website. First we will add a bucket policy - Bucket > Permission > Edit > Bucket Policy
+
+You can find the bucket-policy.json - https://github.com/kohlidevops/DevOpsWithAWS/blob/main/bucket-policy.json
+
+
+![image](https://github.com/user-attachments/assets/1da1827a-6774-4c31-82dc-574bfe87d7ee)
+
+
+To make this bucket static website hosting - Properties > Static Website hosting > Enable > Hosting type > Host a static website
+
+```
+index document - index.html
+error document - error.html
+```
+
+Then > Save changes
+
+
+### To create a Code Pipeline
+
+AWS > Code Pipeline > Create a new Pipeline
+
+Category > Build a Custom Pipeline > Next
+
+Pipeline name > MyGitHubPipeline
+
+Execution mode > Queued
+
+Service role > New service role > Next
+
+
+<img width="759" alt="image" src="https://github.com/user-attachments/assets/03de8130-187d-4cbe-8da9-5d772b114a3c" />
+
+
+Source provider > GitHub (via GitHub App)
+
+Connection > Choose your connection 
+
+Repository name > Choose your repo
+
+
+<img width="758" alt="image" src="https://github.com/user-attachments/assets/967fcbc1-366b-4794-9482-872a5adbb2f0" />
+
+
+Default branch > main
+
+Skip build and test stage > Next
+
+Deploy provider > Amazon S3
+
+Region > Choose your region 
+
+Input Artifacts > SourceArtifact
+
+Bucket > Choose your S3 bucket
+
+Choose > Extract file before deploy
+
+
+<img width="763" alt="image" src="https://github.com/user-attachments/assets/13b004a3-e81e-4f02-b8a1-954f41c6e663" />
+
+
+Next > Review and Create a Pipeline > The Pipeline has been started and completed
+
+
+<img width="824" alt="image" src="https://github.com/user-attachments/assets/cd9d7ca9-e0d4-4c5b-b057-4b20e926a458" />
+
+
+If you access the S3 static website hosting
+
+
+<img width="690" alt="image" src="https://github.com/user-attachments/assets/c09d8888-13c7-4b6f-9f60-a7f3846b8675" />
+
+
+
+
+
+
