@@ -1,4 +1,6 @@
-# How to Connect GitHub Account to AWS Code Pipeline?
+# CICD to automate the Static Website Hosting using GitHub, AWS CodePipeline and S3 Bucket
+
+## How to Connect GitHub Account to AWS Code Pipeline?
 
 To create a private repository named my-website-repo in GitHub
 
