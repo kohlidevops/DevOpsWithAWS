@@ -1,4 +1,4 @@
-#🚀 Getting Started with AWS CodeBuild: A Beginner-Friendly Guide
+# 🚀 Getting Started with AWS CodeBuild: A Beginner-Friendly Guide
 
 Are you new to AWS CodeBuild and wondering how it fits into your CI/CD pipeline? You’re in the right place! In this post, we’ll walk through what CodeBuild is, how it works, and why it’s a powerful tool for modern developers.
 
