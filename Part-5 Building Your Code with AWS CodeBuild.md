@@ -47,3 +47,76 @@ error document - index.html
 
 Then save changes
 
+## Creating a CodePipeline with Build Stage
+
+AWS > CodePipeline > Build a Custom Pipeline
+
+Pipeline name > MyDeploymentPipeline
+
+Execution mode > Queued
+
+Service role > New Role
+
+Source provider > GitHub (via GitHub App)
+
+Connections > Connect to a GitHub and create a connection for specific repo
+
+Repository name > kohlidevops/my-angular-repo
+
+Default branch > main
+
+Output artifact format > CodePipeline default
+
+Next > Add build stage > other build provider > AWS CodeBuild > Create a new build project
+
+Project name > MyTestBuild
+
+Environment > On-demand
+
+Environment image > Managed image
+
+Compute > EC2
+
+Running mode > Container
+
+Operating system > Ubuntu
+
+Run times > Standard
+
+Image > aws/codebuild/standard:7.0
+
+Image version > Always use the latest image for this runtime version
+
+Service role > New service role
+
+Build spec > use a buildspec file
+
+Logs > Cloudwatch logs > Continue to Pipeline
+
+Build type > Single build
+
+Input artifact > SourceArtifact
+
+Next > Skip Test Stage
+
+Next > Deployment stage > Amazon S3
+
+Input artifact > BuildArtifact
+
+Bucket > my-deployment-testing-s3-bucket
+
+Choose > Extract file before deploy
+
+Next > Review > Create a Pipeline
+
+```
+Pipeline automatically started and it should be failed due to missing buildspec yaml file - It is expected one
+```
+
+
+<img width="854" alt="image" src="https://github.com/user-attachments/assets/96e1a208-24b4-427a-a20e-f2b573b63d5a" />
+
+
+## Creating a Buildspec file for Builds
+
+
