@@ -197,5 +197,28 @@ If you check with the S3 static website hosting,
 <img width="874" alt="image" src="https://github.com/user-attachments/assets/fab43f71-84bb-4f98-b14e-54cc5aa5fa53" />
 
 
+### Build Life Cycle
+
+✅ SUBMITTED - The build request is submitted to AWS CodeBuild.
+
+✅ QUEUED - The build is waiting in a queue for resources to become available.
+
+✅ PROVISIONING - CodeBuild is setting up the build environment (provisioning the container or VM).
+
+✅ DOWNLOAD_SOURCE - Your source code is downloaded from the source location (like GitHub, CodeCommit, or S3).
+
+✅ INSTALL - This is where tools and runtime environments are installed. 🛠 Example: Install Node.js, Angular CLI, Python, etc.
+
+✅ PRE_BUILD - Any commands that should run before the build process itself. 🧩 Example: npm install, logging in to Docker or ECR, setting up environment variables.
+
+✅ BUILD - The actual build process runs here. 🏗️ Example: ng build, npm run build, mvn package, docker build, etc.
+
+✅ POST_BUILD - Commands to run after the build is done. 📤 Example: Push Docker image, invalidate CloudFront cache, send notifications.
+
+✅ UPLOAD_ARTIFACTS - The built output (e.g., compiled code, zip files, build folders) is uploaded to the specified destination like S3.
+
+✅ FINALIZING - CodeBuild is doing cleanup tasks like closing connections and finalizing logs.
+
+✅ COMPLETED - The entire build lifecycle is complete—success or failure is now reported.
 
 
