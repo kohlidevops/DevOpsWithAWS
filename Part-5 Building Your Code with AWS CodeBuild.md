@@ -119,4 +119,32 @@ Pipeline automatically started and it should be failed due to missing buildspec 
 
 ## Creating a Buildspec file for Builds
 
+### AWS CodeBuild – Buildspec Phases
+
+**➤ install:**
+
+Commands run during installation.
+
+Use for installing packages in the build environment.
+
+Runtime versions are also defined in this phase. If not specified, default runtimes in the build image are used.
+
+**➤ pre_build:**
+
+Commands run before the build.
+
+Use for installing application dependencies, signing in to ECR or Docker Hub, etc.
+
+**➤ build:**
+
+Commands run during the build.
+
+Use for running builds and tests.
+
+**➤ post_build:**
+
+Commands run after the build.
+
+Use for your post-build actions, such as pushing Docker images to ECR, sending notifications via SNS, etc.
+
 
