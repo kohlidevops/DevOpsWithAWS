@@ -147,4 +147,55 @@ Commands run after the build.
 
 Use for your post-build actions, such as pushing Docker images to ECR, sending notifications via SNS, etc.
 
+buildspec.yml file
+
+```
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm install -g @angular/cli@17
+
+  pre_build:
+    commands:
+      - npm install
+
+  build:
+    commands:
+      - ng build -c production
+
+artifacts:
+  base-directory: dist/my-angular-project
+  files:
+    - '**/*'
+```
+
+else you can download the file from below link
+
+```
+https://github.com/kohlidevops/DevOpsWithAWS/blob/main/buildspec.yml
+```
+
+This buildspec.yml should be placed in the project root directory in GitHub repository
+
+
+<img width="685" alt="image" src="https://github.com/user-attachments/assets/06a8e2d3-29a9-43aa-a33d-bc9f69ae41b8" />
+
+
+After updated in the repository, The CodePipeline has been triggered and it is completed successfully!
+
+
+<img width="868" alt="image" src="https://github.com/user-attachments/assets/2f41737b-e9c6-481e-87f5-ee0eace0ccff" />
+
+
+If you check with the S3 static website hosting,
+
+
+<img width="874" alt="image" src="https://github.com/user-attachments/assets/fab43f71-84bb-4f98-b14e-54cc5aa5fa53" />
+
+
+
 
