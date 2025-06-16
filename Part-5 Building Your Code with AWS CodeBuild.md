@@ -222,3 +222,126 @@ If you check with the S3 static website hosting,
 ✅ COMPLETED - The entire build lifecycle is complete—success or failure is now reported.
 
 
+### Adding a Test Action with CodeBuild
+
+AWS > your Pipeline > Choose > Edit
+
+Select > Add Action group in Build Stage
+
+
+<img width="693" alt="image" src="https://github.com/user-attachments/assets/5a880b53-0de9-430a-a023-770e066dd844" />
+
+
+Action name > UnitTest
+
+Action provider > Test > CodeBuild
+
+Input artifact > SourceArtifact
+
+Project name > Create a project
+
+Project name > MyUnitTest
+
+Provisioned model > On-demand
+
+Environment image > Managed image
+
+Compute > EC2
+
+Running mode > Container
+
+Operating system > Ubuntu
+
+Image > aws/codebuild/standard:7.0
+
+Image version > Always use the latest
+
+Service role > New role
+
+Use a buildspec file > unit-test-buildspec.yml
+
+Then > Continue to Pipeline
+
+
+<img width="861" alt="image" src="https://github.com/user-attachments/assets/cee8e1db-8958-4eb3-9ab9-3e44318f74ce" />
+
+
+Save & Done
+
+
+<img width="780" alt="image" src="https://github.com/user-attachments/assets/3ba9a89d-4117-4b5d-957c-1f783f25d38d" />
+
+
+Finally save the Pipeline
+
+
+<img width="875" alt="image" src="https://github.com/user-attachments/assets/ece4d61f-7832-4075-a44c-0004450251b0" />
+
+
+### To add the Unit Test buildspec in project root directory in GitHub repository
+
+```
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm install -g @angular/cli@17
+
+      # Chrome installation for Angular's unit tests
+      - wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor | tee /etc/apt/keyrings/chrome.gpg
+      - echo "deb [signed-by=/etc/apt/keyrings/chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
+      - apt-get -y update
+      - apt-get -y install google-chrome-stable
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - ng test --no-watch --no-progress --browsers=ChromeHeadlessCI
+```
+
+
+<img width="889" alt="image" src="https://github.com/user-attachments/assets/0d09ff28-fa73-4952-a0f9-8a5a60d2f656" />
+
+
+After adding the unit-test-buildspec.yml in to the repository, then Pipeline should triggered. (If it is failed due to permission, then add the below policy into the CodePipeline IAM Role)
+
+```
+https://github.com/kohlidevops/DevOpsWithAWS/blob/main/codebuild-startbuild-policy.json
+```
+
+The pipeline has been succeeded!
+
+
+<img width="860" alt="image" src="https://github.com/user-attachments/assets/41eb2b01-3d01-4787-8911-ed419390b079" />
+
+
+If you do change in addition function in repository - my-angular-repo/src/app/calculator/calculator.component.ts
+
+```
+switch ( operator ) {
+      case '+': {
+
+        this.result =  firstInput / secondInput;
+        break;
+
+      }
+```
+
+//I have updated symbol "/" instead of "+" and do the commit - Now the test case should failed means Pipeline should get failed
+
+The build has been failed due to test cases
+
+
+<img width="854" alt="image" src="https://github.com/user-attachments/assets/c5681a9f-58d2-457f-8953-ba4b97184071" />
+
+
+If you update the symbol "+" instead of "/" and do the commit - Now the test case should succeeded means Pipeline should passed
+
+
+<img width="847" alt="image" src="https://github.com/user-attachments/assets/569d9f36-c9c1-48d0-a4e3-326f259f740e" />
+
+
+
