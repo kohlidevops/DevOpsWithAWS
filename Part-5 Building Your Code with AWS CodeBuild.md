@@ -1,7 +1,7 @@
 # Building Your Code with AWS CodeBuild and Deploy the app to S3 Bucket using AWS CodePipeline
 
 
-<img width="538" alt="image" src="https://github.com/user-attachments/assets/ab07f056-d4d2-47f2-9890-c456048b3c7e" />
+<img width="538" alt="image" src="https://github.com/user-attachments/assets/3feac7ed-1809-44b3-9637-26adea789866" />
 
 
 
