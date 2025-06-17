@@ -1,5 +1,10 @@
 # Building Your Code with AWS CodeBuild and Deploy the app to S3 Bucket using AWS CodePipeline
 
+
+<img width="538" alt="image" src="https://github.com/user-attachments/assets/ab07f056-d4d2-47f2-9890-c456048b3c7e" />
+
+
+
 ## Preparing a Repository in GitHub
 
 To create a new private repository in GitHub and clone the below link to make the project available in the repository.
