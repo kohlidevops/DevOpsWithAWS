@@ -126,9 +126,53 @@ AWS > IAM Role > Create a new IAM Role > Trusted entity type > AWS Service > Use
 <img width="698" alt="image" src="https://github.com/user-attachments/assets/ea4b3341-230c-4ed3-9c24-d5d637466f2e" />
 
 
+### Configuring EC2 Instance for AWS CodeDeploy
+
+To Launch an Amazon Linux2
+
+AWS > EC2 console > Launch Amazon Linux2 > Associate an IAM Role "AmazonEC2RoleforAWSCodeDeploy" and launch Instance
 
 
+<img width="792" alt="image" src="https://github.com/user-attachments/assets/986453f5-beb8-49a6-8184-b2fdb2c3c255" />
 
+
+SSH to EC2 Instance
+
+```
+sudo yum update -y
+sudo yum install -y ruby wget
+wget https://aws-codedeploy-ap-south-1.s3.ap-south-1.amazonaws.com/latest/install
+chmod +x ./install
+sudo ./install auto
+# Checking CodeDeploy Agent status
+sudo service codedeploy-agent status
+# Installing Nginx
+sudo amazon-linux-extras install -y nginx1
+# Checking Nginx status
+sudo service nginx status
+# Starting Nginx
+sudo service nginx start
+# Enabling Nginx to restart on system reboot
+sudo chkconfig nginx on
+# Creating folders for deployments
+sudo mkdir -p /var/www/my-angular-project
+# Changing Nginx configuration
+sudo nano /etc/nginx/nginx.conf
+# Only change root to /var/www/my-angular-project
+//root         /var/www/my-angular-project/
+//save and exit
+# Restart Nginx
+sudo service nginx restart
+```
+
+
+<img width="756" alt="image" src="https://github.com/user-attachments/assets/c6d174a8-4c96-4885-9ba6-3ccd9a1ae339" />
+
+
+Its expected one as this directory is empty! So CodeDeploy raises 403 error
+
+
+### Creating a CodeDeploy Deployment Group for Tagged EC2 Instances
 
 
 
