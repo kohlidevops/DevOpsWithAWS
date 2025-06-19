@@ -206,4 +206,83 @@ Finally your CodeDeployServiceRole should belo policies
 <img width="695" alt="image" src="https://github.com/user-attachments/assets/c5af5c21-d928-422f-b43f-faa14085d9d8" />
 
 
+### Create a Application in CodeDeploy
+
+AWS > CodeDeploy > Application > Create a new Application
+
+Application name > MyDeploymentApplication
+
+Compute platform > EC2/On-Premise
+
+
+<img width="773" alt="image" src="https://github.com/user-attachments/assets/ae0aa1a7-35ba-4ef9-971c-f1f910b4a0c7" />
+
+
+### Create a Deployment Group
+
+AWS > CodeDeploy > Application > Choose your Application "MyDeploymentApplication" > Deployment Group > Create a Deployment Group
+
+
+<img width="678" alt="image" src="https://github.com/user-attachments/assets/21dd04d8-890e-4ada-9c28-1ece882f6a6e" />
+
+
+Deployment group name  > MyDeploymentGroup
+
+Service role > Just select what you have created now
+
+Deployment type > In place
+
+Environment configuration > Amazon EC2 Instances
+
+Tag key > Name and Tag value > MyCodeDeployment-AmazonLinux2
+
+Deployment settings > Deployment configuration > CodeDeployDefault.AllAtOnce
+
+Disable > Load balancer > Create a Deployment group
+
+
+<img width="676" alt="image" src="https://github.com/user-attachments/assets/3b268e9e-63e0-48d8-af11-3b17c73cfdd7" />
+
+
+### Adding a CodeDeploy Deploy Action to your Pipeline
+
+Already we have a created a CodePipeline for S3 Static website hosting. So Im going to use the same Pipeline - Please have a look below link 
+
+```
+https://github.com/kohlidevops/DevOpsWithAWS/blob/main/Part-5%20Building%20Your%20Code%20with%20AWS%20CodeBuild.md
+```
+
+Existing Pipeline is like below
+
+
+<img width="855" alt="image" src="https://github.com/user-attachments/assets/1644b9a0-2a09-4e01-b2c4-1107501a299c" />
+
+As I'm going to remove the "Deploy" Action using Edit > Pipeline > Deploy > Edit stage > Remove the current Deploy Action and New Deploy Action
+
+Action name > DeployToEC2Instance
+
+Action provider > AWS CodeDeploy
+
+Region > Mumbai
+
+Artifacts > BuildArtifact
+
+Application name > MyDeploymentApplication
+
+Deployment group > MyDeploymentGroup
+
+Done > save the Pipeline changes
+
+
+<img width="853" alt="image" src="https://github.com/user-attachments/assets/fe4f74ad-b869-4b88-84b2-93ea518bb5e6" />
+
+
+
+
+
+
+
+
+
+
 
