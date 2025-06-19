@@ -174,6 +174,36 @@ Its expected one as this directory is empty! So CodeDeploy raises 403 error
 
 ### Creating a CodeDeploy Deployment Group for Tagged EC2 Instances
 
+To Create an IAM Role for CodeDeploy Service
+
+AWS > IAM Role > Create a new IAM Role > Trusted entity > CodeDeploy > Use case > CodeDeploy > name it "MyDeploymentCodeDeployServiceRole" and create
+
+Add below inline policy to that role
+
+```
+{
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "Statement1",
+			"Effect": "Allow",
+			"Action": ["ec2:RunInstances", "ec2:CreateTags", "iam:PassRole"],
+			"Resource": "*"
+		}
+	]
+}
+```
+
+else you can use below link to copy
+
+```
+https://github.com/kohlidevops/DevOpsWithAWS/blob/main/CodeDeployBlueGreenPolicy.json
+```
+
+Finally your CodeDeployServiceRole should belo policies
+
+
+<img width="695" alt="image" src="https://github.com/user-attachments/assets/c5af5c21-d928-422f-b43f-faa14085d9d8" />
 
 
 
