@@ -96,4 +96,29 @@ _For EC2:_ use appspec.yml (YAML) or appspec.json (JSON).
 _For ECS and Lambda:_ use appspec.yaml (YAML) or appspec.json (JSON).
 
 
+### How do EC2 Instances work with AWS CodeDeploy?
+
+➤ EC2 instances communicate with AWS CodeDeploy through a software package called the CodeDeploy agent.
+
+
+<img width="419" alt="image" src="https://github.com/user-attachments/assets/a1e6cb7e-2686-48a3-b990-6b83a51e3433" />
+
+➤ The CodeDeploy agent supports specific versions of Amazon Linux, Ubuntu Server, Windows Server, and Red Hat Enterprise Linux (RHEL).
+
+➤ Once installed and enabled, the CodeDeploy agent polls AWS CodeDeploy for new deployments every second by default.
+
+➤ The CodeDeploy agent downloads the revision containing the source code, the Appspec file, and dthe deployment scripts from Amazon S3.
+
+➤ The EC2 instance needs permission to access this S3 bucket via an IAM role.
+
+
+<img width="464" alt="image" src="https://github.com/user-attachments/assets/d309e246-caf3-42e0-96ee-9ebce7fabe97" />
+
+
+➤ After downloading the revision, the CodeDeploy agent performs the deployment according to the Appspec file.
+
+
+
+
+
 
