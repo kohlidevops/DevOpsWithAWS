@@ -118,6 +118,17 @@ _For ECS and Lambda:_ use appspec.yaml (YAML) or appspec.json (JSON).
 ➤ After downloading the revision, the CodeDeploy agent performs the deployment according to the Appspec file.
 
 
+**Creating an IAM Role for EC2 instances for Deployments**
+
+AWS > IAM Role > Create a new IAM Role > Trusted entity type > AWS Service > Use case > EC2 > Associate IAM Policy "AmazonEC2RoleforAWSCodeDeploy" and name it "MyDeploymentCodeDeployRoleForEC2"
+
+
+<img width="698" alt="image" src="https://github.com/user-attachments/assets/ea4b3341-230c-4ed3-9c24-d5d637466f2e" />
+
+
+
+
+
 
 
 
