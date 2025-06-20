@@ -686,6 +686,56 @@ Do you want to store the config in the SSM parameter store?
 2. no
 default choice: [1]: 2
 
+```
+# Edit the config file
+sudo nano /opt/aws/amazon-cloudwatch-agent/bin/config.json
+
+# "timestamp_format": "[%Y-%m-%d %H:%M:%S.%f]"
+# Ctrl+X to exit nano, press Y to save changes, press Enter to approve.
+```
+
+Your config.json would be
+
+```
+{
+        "agent": {
+                "run_as_user": "cwagent"
+        },
+        "logs": {
+                "logs_collected": {
+                        "files": {
+                                "collect_list": [
+                                        {
+                                                "file_path": "/opt/codedeploy-agent/deployment-root/deployment-logs/codedeploy-agent$                                                "log_group_class": "STANDARD",
+                                                "log_group_name": "codedeploy-agent-deployments.log",
+                                                "log_stream_name": "{instance_id}",
+                                                "retention_in_days": 1,
+                                                "timestamp_format": "[%Y-%m-%d %H:%M:%S.%f]"
+                                        }
+                                ]
+                        }
+                }
+        }
+}
+```
+
+To start/stop the CloudWatchAgent and check the status
+
+```
+# Start CloudWatch agent 
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json -s
+# Check CloudWatch agent status
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -m ec2 -a status
+```
+
+<img width="876" alt="image" src="https://github.com/user-attachments/assets/eadb8451-3b70-4919-9a91-7b0664b41e7b" />
+
+
+If you check with the CloudWatch Loggroups
+
+
+<img width="890" alt="image" src="https://github.com/user-attachments/assets/71891d15-afd1-415c-8ec6-baaadb3e8025" />
+
 
 
 
