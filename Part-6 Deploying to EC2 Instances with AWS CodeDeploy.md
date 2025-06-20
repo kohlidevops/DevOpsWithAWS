@@ -563,10 +563,128 @@ If you access the EC2 DNS
 <img width="832" alt="image" src="https://github.com/user-attachments/assets/28cb0a88-9087-4d8d-a447-fba8c1bab181" />
 
 
+### Viewing Deployment Logs on Your EC2 Instance
+
+SSH to EC2 Instance 
+
+```
+ls -lh /opt/codedeploy-agent/deployment-root/deployment-logs/
+cat /opt/codedeploy-agent/deployment-root/deployment-logs/codedeploy-agent-deployments.log
+```
+
+<img width="917" alt="image" src="https://github.com/user-attachments/assets/5bfe1684-9344-4548-a208-0572bc6dbdf8" />
 
 
+You can find the deployment group id, deployment archieve, and its logs using below path
+
+```
+ls -lh /opt/codedeploy-agent/deployment-root/f5f8e035-99f2-4def-912c-3e6cadc55ef5/
+ls -lh /opt/codedeploy-agent/deployment-root/f5f8e035-99f2-4def-912c-3e6cadc55ef5/d-5RUS2K3BC/
+```
 
 
+<img width="944" alt="image" src="https://github.com/user-attachments/assets/b05670d4-75db-46cb-9445-974172318c04" />
+
+
+### To Streaming Deployment Logs to CloudWatch Logs
+
+**To add the CloudWatchAgentServer Policy to an EC2 Instance IAM Role**
+
+AWS > Choose your EC2 Instance > Security > IAM Role > Attach the policy and Save
+
+
+<img width="695" alt="image" src="https://github.com/user-attachments/assets/32ba1d2d-ff3d-4597-945f-fde075b0fcc7" />
+
+
+**To Instance the CloudwatchAgent onto the EC2 Instance**
+
+SSH to EC2 Instance
+
+```
+# Download the unified CloudWatch agent
+wget https://s3.amazonaws.com/amazoncloudwatch-agent/amazon_linux/amd64/latest/amazon-cloudwatch-agent.rpm
+# Install the package
+sudo rpm -U ./amazon-cloudwatch-agent.rpm
+# Create configuration file using CloudWatch agent wizard
+sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard
+# Now it will ask set of questions as below
+```
+
+On which OS are you planning to use the agent?
+1. linux
+2. windows
+3. darwin
+default choice: [1]: 1
+
+Trying to fetch the default region based on ec2 metadata...
+I! imds retry client will retry 1 timesAre you using EC2 or On-Premises hosts?
+1. EC2
+2. On-Premises
+default choice: [1]: 1
+
+Which user are you planning to run the agent?
+1. cwagent
+2. root
+3. others
+default choice: [1]: 1
+
+Do you want to turn on StatsD daemon?
+1. yes
+2. no
+default choice: [1]: 2
+
+Do you want to monitor metrics from CollectD? WARNING: CollectD must be installed or the Agent will fail to start
+1. yes
+2. no
+default choice: [1]: 2
+
+Do you want to monitor any host metrics? e.g. CPU, memory, etc.
+1. yes
+2. no
+default choice: [1]: 2
+
+Do you have any existing CloudWatch Log Agent (http://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AgentReference.html) configuration file to import for migration?
+1. yes
+2. no
+default choice: [2]: 2
+
+Do you want to monitor any log files?
+1. yes
+2. no
+default choice: [1]: 1
+
+Log file path: /opt/codedeploy-agent/deployment-root/deployment-logs/codedeploy-agent-deployments.log
+
+Log group name: default choice: [codedeploy-agent-deployments.log]
+
+Log group class:
+1. STANDARD
+2. INFREQUENT_ACCESS
+default choice: [1]: 1
+
+Log stream name:
+default choice: [{instance_id}]
+
+Log Group Retention in days:
+default choice: [1]: 2
+
+Do you want to specify any additional log files to monitor?
+1. yes
+2. no
+default choice: [1]: 2
+
+Do you want the CloudWatch agent to also retrieve X-ray traces?
+1. yes
+2. no
+default choice: [1]: 2
+
+Existing config JSON identified and copied to:  /opt/aws/amazon-cloudwatch-agent/etc/backup-configs
+Saved config file to /opt/aws/amazon-cloudwatch-agent/bin/config.json successfully.
+
+Do you want to store the config in the SSM parameter store?
+1. yes
+2. no
+default choice: [1]: 2
 
 
 
