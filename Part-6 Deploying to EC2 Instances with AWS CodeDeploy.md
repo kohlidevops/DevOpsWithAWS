@@ -390,9 +390,9 @@ Send alerts or metrics
 
 #### Summary of Buildspec and Appspec File
 
-**1. 🔨 buildspec.yml — Build Phase (CodeBuild)**
+**🔨 buildspec.yml — Build Phase (CodeBuild)**
 
-Environment Setup
+**1. Environment Setup**
 
 Installs Node.js 20 and Angular CLI v17.
 
@@ -402,9 +402,8 @@ Runs npm install to install all project dependencies.
 
 **3. Build**
 
-Runs Angular production build: ng build -c production. 
-
-Output is generated in dist/my-angular-project/.
+- Runs Angular production build: ng build -c production. 
+- Output is generated in dist/my-angular-project/.
 
 **4. Artifacts Packaging**
 
@@ -430,11 +429,113 @@ Copies the built Angular app from dist/my-angular-project (in S3) to /var/www/my
 - Runs a custom shell script: deploy-scripts/application-start-hook.sh.
 - This script is used to start or restart the application (typically launching a web server like NGINX).
 
-📘 Full Flow Summary
+#### 📘 Full Flow Summary
 
-- CodeBuild installs dependencies, builds the Angular app, and uploads deployment files to S3.
-- CodeDeploy fetches the build from S3, deploys it to a Linux server, sets proper permissions, and runs a start script.
-- After deployment, your app is ready to be served from /var/www/my-angular-project.
+**🟢 1. buildspec.yml — Runs First (in CodeBuild)**
+
+
+✅ Runs in AWS CodeBuild.
+
+✅ Installs Node.js and Angular CLI.
+
+✅ Installs your app’s dependencies.
+
+✅ Builds your Angular app → output goes to dist/my-angular-project.
+
+✅ Packages these into an artifact:
+
+- Your app build folder (dist/my-angular-project/**/*)
+- appspec.yml
+- Any deployment scripts (deploy-scripts/**/*)
+
+✅ Uploads the artifact to S3 — automatically handled by CodeBuild.
+
+**🟠 2. appspec.yml — Runs Next (in CodeDeploy)**
+
+This is your deployment phase — triggered after CodeBuild completes.
+
+✅ Runs in AWS CodeDeploy.
+
+✅ Downloads the artifact from S3 (that CodeBuild uploaded).
+
+✅ Copies your Angular app to the target path: /var/www/my-angular-project.
+
+✅ Sets file permissions and ownership.
+
+✅ Runs deploy-scripts/application-start-hook.sh to start or reload your app (e.g., restart NGINX or PM2).
+
+#### Buildspec updated file
+
+```
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+    commands:
+      - npm install -g @angular/cli@17
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - ng build -c production
+    finally:
+      - echo 'This is the finally block execution!'
+artifacts:
+  files:
+    - 'dist/my-angular-project/**/*'
+    - appspec.yml
+    - 'deploy-scripts/**/*'
+```
+
+#### Appspec updated file
+
+```
+version: 0.0
+os: linux
+files:
+  - source: dist/my-angular-project
+    destination: /var/www/my-angular-project
+permissions:
+  - object: /var/www/my-angular-project
+    pattern: '**'
+    mode: '0755'
+    owner: root
+    group: root
+    type:
+      - file
+      - directory
+hooks:
+  ApplicationStart:
+    - location: deploy-scripts/application-start-hook.sh
+      timeout: 300
+```
+
+#### To create a deploy script
+
+To create a folder named "deploy-scripts" in the root directory of GitHub project repository and create a file named "application-start-hook.sh" inside the deploy-script folder
+
+
+_application-start-hook.sh_
+
+```
+#!/bin/bash
+sudo service nginx restart
+```
+
+
+<img width="721" alt="image" src="https://github.com/user-attachments/assets/672edd8c-7237-42ad-8137-0feb39c95e43" />
+
+
+#### To update a buildspec and appspec file
+
+To add a buildspec and appspec file in the root directory of the project repo and do the Release change in the AWS CodePipeline
+
+
+
+
+
 
 
 
