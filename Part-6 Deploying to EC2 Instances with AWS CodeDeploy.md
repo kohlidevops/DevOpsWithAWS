@@ -277,7 +277,113 @@ Done > save the Pipeline changes
 <img width="853" alt="image" src="https://github.com/user-attachments/assets/fe4f74ad-b869-4b88-84b2-93ea518bb5e6" />
 
 
+### 🔁 AppSpec Lifecycle Hooks
 
+**ApplicationStop**
+
+👉 Think of this as "Clean Up Before New Code"
+
+Stops your running app safely
+
+Cleans the environment (e.g., stops services, removes temp files)
+
+Happens before the new version is downloaded
+
+✅ Used only from second deployment onward (first deployment doesn't have a previous version to stop)
+
+**BeforeInstall**
+
+👉 Think of this as "Get Ready for Installation"
+
+Runs just before installing your new code
+
+Can decrypt secrets, take backups of the current app, etc.
+
+**AfterInstall**
+
+👉 Think of this as the setup step after files are copied.
+
+Use it to:
+
+Run post-install scripts
+
+Configure your application
+
+Set permissions, etc.
+
+📦 Example: Install dependencies or unzip files.
+
+**ApplicationStart**
+
+👉 Time to launch your app (that was stopped earlier).
+
+Use it to:
+
+Start your app
+
+Restart web servers or services
+
+📦 Example: sudo systemctl start myapp
+
+**ValidateService**
+
+👉 Final check – “Did everything go well?”
+
+Use it to:
+
+Run tests or health check scripts
+
+Ensure the app is up and working
+
+📦 Example: Ping an endpoint or check if service is running.
+
+**BeforeBlockTraffic**
+
+👉 Run this before removing the instance from the load balancer (ELB).
+
+Use it to:
+
+Notify monitoring tools
+
+Finish any active requests
+
+Gracefully prepare for downtime
+
+**AfterBlockTraffic**
+
+👉 Run this after the instance is removed from the ELB.
+
+Use it to:
+
+Stop services
+
+Start maintenance tasks
+
+Free up resources
+
+**BeforeAllowTraffic**
+
+👉 Run this before adding the instance back to the ELB.
+
+Use it to:
+
+Finalize app setup
+
+Warm up services or cache
+
+Health check readiness
+
+**AfterAllowTraffic**
+
+👉 Run this after the instance is registered with the ELB.
+
+Use it to:
+
+Notify monitoring that the app is live
+
+Log deployment completion
+
+Send alerts or metrics
 
 
 
