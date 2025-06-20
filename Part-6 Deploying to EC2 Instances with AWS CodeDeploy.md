@@ -533,6 +533,36 @@ sudo service nginx restart
 To add a buildspec and appspec file in the root directory of the project repo and do the Release change in the AWS CodePipeline
 
 
+//If codepipeline faile due to insufficient permission then please add below inline policy to the CodePipeline role
+
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "codedeploy:*"
+            ],
+            "Resource": [
+                "*"
+            ]
+        }
+    ]
+}
+```
+The CodePipeline has been succeeded!
+
+
+<img width="884" alt="image" src="https://github.com/user-attachments/assets/a911f36d-2b40-48a7-b5a7-99a95e5f7938" />
+
+
+If you access the EC2 DNS
+
+
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/28cb0a88-9087-4d8d-a447-fba8c1bab181" />
+
+
 
 
 
