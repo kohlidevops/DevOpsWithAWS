@@ -386,7 +386,55 @@ Log deployment completion
 Send alerts or metrics
 
 
+### Creating an Appspec File for Deployments to EC2 Instances and update a Buildspec File
 
+#### Summary of Buildspec and Appspec File
+
+**1. 🔨 buildspec.yml — Build Phase (CodeBuild)**
+
+Environment Setup
+
+Installs Node.js 20 and Angular CLI v17.
+
+**2. Dependency Installation**
+
+Runs npm install to install all project dependencies.
+
+**3. Build**
+
+Runs Angular production build: ng build -c production. 
+
+Output is generated in dist/my-angular-project/.
+
+**4. Artifacts Packaging**
+
+Uploads the following to S3 (used by CodeDeploy):
+
+- Built Angular app (dist/my-angular-project)
+- Deployment scripts (deploy-scripts/**/*)
+- Deployment configuration (appspec.yml)
+
+**🚀 appspec.yml — Deployment Phase (CodeDeploy)**
+
+**1. File Copy**
+
+Copies the built Angular app from dist/my-angular-project (in S3) to /var/www/my-angular-project on the target Linux server.
+
+**2. Set Permissions**
+
+- Applies 0755 permissions (read-execute for all) to all files and folders.
+- Sets root as the owner and group.
+
+**3. Post-Deployment Hook**
+
+- Runs a custom shell script: deploy-scripts/application-start-hook.sh.
+- This script is used to start or restart the application (typically launching a web server like NGINX).
+
+📘 Full Flow Summary
+
+- CodeBuild installs dependencies, builds the Angular app, and uploads deployment files to S3.
+- CodeDeploy fetches the build from S3, deploys it to a Linux server, sets proper permissions, and runs a start script.
+- After deployment, your app is ready to be served from /var/www/my-angular-project.
 
 
 
