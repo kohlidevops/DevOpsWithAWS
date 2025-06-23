@@ -1095,17 +1095,56 @@ AWS > Code Deploy > Application > Your Application > Choose your Deployment Grou
 
 <img width="681" alt="image" src="https://github.com/user-attachments/assets/e501da9b-c3fe-44d7-8a40-392067d72343" />
 
-
+```
 Edit the Group
-
 Deployment type > Blue-Green Deployment
-
 Environment configuration > Automatically copy ASG Group
-
 Deployment settings > Traffic rerouting > Reroute traffic immediately
-
 Choose > Terminate the original instances in the deployment group
-
 Deployment configuration > CodeDeployDefault.AllAtOnce
-
 Leave others as it and save changes
+```
+
+<img width="680" alt="image" src="https://github.com/user-attachments/assets/c5011c18-c173-4d91-a4a0-0f9dbcdc6869" />
+
+
+To update the version in GitHub repo - src/app/app.component.html - Then Pipeline should get trigger automatically
+
+The deployment has been started
+
+
+<img width="664" alt="image" src="https://github.com/user-attachments/assets/9c0009d3-bd0a-444b-b60b-3b1dda79c600" />
+
+
+New ASG has been created for Green environment
+
+
+<img width="896" alt="image" src="https://github.com/user-attachments/assets/16428c16-ff4e-4c90-8f44-3dddef278354" />
+
+
+Now its re-routing the traffic to the new ASG instances
+
+
+<img width="649" alt="image" src="https://github.com/user-attachments/assets/53511a69-0b7a-4dbe-9608-c348d592eb30" />
+
+
+Finally terminating the original instances
+
+
+<img width="670" alt="image" src="https://github.com/user-attachments/assets/91d2581a-ceaf-4d84-a264-00cc4b61b2ec" />
+
+
+The original ASG is deleting
+
+
+<img width="869" alt="image" src="https://github.com/user-attachments/assets/25d819f1-262d-4a37-8d2c-6e5ea35307eb" />
+
+
+New version has been deployed
+
+
+<img width="856" alt="image" src="https://github.com/user-attachments/assets/7dfb089c-5a03-4712-b87d-ca1f40c8c256" />
+
+
+
+
