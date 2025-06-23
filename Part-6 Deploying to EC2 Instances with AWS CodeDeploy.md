@@ -912,7 +912,23 @@ As a result, we could see the temporary outage which should not accept in produc
 Now Deployment has been done. So i can able to see the site and version has been changed as v2.0
 
 
-<img width="800" alt="image" src="https://github.com/user-attachments/assets/ec035f7f-7aee-430f-924e-264da600af6b" />
+<img width="823" alt="image" src="https://github.com/user-attachments/assets/5d5297d4-6512-40c3-9d3f-fe7a29055e51" />
+
+
+### What If Your Auto Scaling Groups Scales Out?
+
+If you use CodeDeploy with an EC2 Auto-Scaling group and if it scales out, the revision from the last known successful deployment is deployed to the new EC2 instances automatically. However please associate your auto-scaling group with only one CodeDeploy deployment group at a time. Otherwise multiple deployments from different deployment group may cause conflicts in your EC2 instances, and they become a Unhealthy. It may even cause your aut-scaling group to repeatedly launch and remove new EC2 instances
+
+If you scale-out the ASG from 2 to 3, then new deployment has been succeeded!
+
+
+<img width="645" alt="image" src="https://github.com/user-attachments/assets/908521cc-83f7-4a42-89cd-dc91c1e125e8" />
+
+
+All ASG instances are healthy to receive traffic
+
+
+<img width="679" alt="image" src="https://github.com/user-attachments/assets/8d2c98c2-d22a-4d74-af9c-e300f57ebb28" />
 
 
 
