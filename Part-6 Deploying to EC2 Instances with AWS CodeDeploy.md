@@ -853,7 +853,7 @@ Deployment Group > MyDeploymentAutoScalingGroup (It should be new one which is c
 Done > Done > Save Changes
 ```
 
-Then Release the change to deploy everything on the EC2 ASG!
+Then Release the change to deploy everything on the EC2 ASG! If you check with ALB URL,
 
 
 <img width="839" alt="image" src="https://github.com/user-attachments/assets/c72a0c03-18b3-403b-9501-1afeaec8096e" />
