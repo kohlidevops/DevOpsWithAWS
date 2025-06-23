@@ -862,5 +862,58 @@ Then Release the change to deploy everything on the EC2 ASG! If you check with A
 The CodePipeline deployed the webapp on the EC2 ASG instances successfully!
 
 
+### In-Place All-At-Once Deployments with Auto Scaling & Load balancing
+
+In an In-Place All-At-Once deployment using AWS CodeDeploy, the new application version is deployed simultaneously to all instances in the deployment group.
+
+**Key Characteristics:**
+
+⚡ Fastest deployment method
+
+🔄 Replaces the current version directly on existing EC2 instances
+
+💥 All instances go out of service briefly during deployment
+
+**Pros**:
+
+Quick rollout of changes
+
+Simple deployment strategy
+
+**Cons:**
+
+❌ Not suitable for production
+
+⛔ Causes short outages (downtime during deployment)
+
+❌ No rollback safety without manual intervention
+
+❌ High risk if new version fails
+
+
+I have changed the version as 2.0 in GitHub Project - src/app/app.component.html. Then Pipeline triggered automatically! Let see what will happen
+
+The Deployment started
+
+
+<img width="832" alt="image" src="https://github.com/user-attachments/assets/7e4bb634-c76f-4768-8906-d5d53f1529ad" />
+
+
+Now Target group instances are started draining
+
+<img width="727" alt="image" src="https://github.com/user-attachments/assets/44b86c1f-48cd-476b-81db-3d1a5e23981b" />
+
+
+As a result, we could see the temporary outage which should not accept in production
+
+
+<img width="559" alt="image" src="https://github.com/user-attachments/assets/e94e5009-356f-4798-8f22-b1b15608a124" />
+
+Now Deployment has been done. So i can able to see the site and version has been changed as v2.0
+
+
+<img width="800" alt="image" src="https://github.com/user-attachments/assets/ec035f7f-7aee-430f-924e-264da600af6b" />
+
+
 
 
