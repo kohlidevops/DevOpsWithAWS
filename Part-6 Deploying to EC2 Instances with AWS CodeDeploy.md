@@ -932,4 +932,156 @@ All ASG instances are healthy to receive traffic
 
 
 
+### In-Place Rolling Deployments With Auto Scaling & Load balancing
+
+1. CodeDeploy starts the deployment on one instance at a time.
+
+2. Before deploying, CodeDeploy: Deregisters the instance from the Load Balancer (so no traffic is sent to it).
+
+3. Deployment runs on that instance (app stops, new version installed, app restarts).
+
+4. After success, it is re-registered to the Load Balancer.
+
+5. The process repeats for the next instance until all 3 are updated.
+
+**🔁 If a Deployment Fails:**
+
+1. CodeDeploy immediately stops the deployment.
+
+2. It triggers a rollback to the last successful revision on already-deployed instances.
+
+3. Unaffected instances stay on the original version.
+
+4. ASG remains healthy, and traffic is only served by successfully running instances.
+
+To change the Deployment configuration in CodeDeploy application
+
+AWS > CodeDeploy > Application > Choose your Deployment groups > MyDeploymentAutoScalingGroup > Edit
+
+
+<img width="553" alt="image" src="https://github.com/user-attachments/assets/3ae39a63-ff5d-4084-9f19-82cd89eac52d" />
+
+```
+Deployment configuration > CodeDeployDefault.OneAtATime
+Choose > Advanced
+Disable rollbacks > Deselect
+Select > Roll back when a deployment fails
+Save the changes
+```
+
+To change the version as 3.0 in GitHub repo - src/app/app.component.html
+
+Then Pipeline trigger automatically, then deploy the app one by one
+
+
+<img width="732" alt="image" src="https://github.com/user-attachments/assets/8054518d-922b-4fa1-8cbc-fd11ef18aa07" />
+
+
+If you see the Deployment Lifecycle, then one is in-propgress others are pending
+
+
+<img width="593" alt="image" src="https://github.com/user-attachments/assets/e081d8d8-5605-45ef-89da-ca133213ff32" />
+
+
+Sometimes your application will serve - V3.0
+
+
+<img width="827" alt="image" src="https://github.com/user-attachments/assets/d273fb43-6145-4f23-be78-553cb63cb060" />
+
+
+Sometimes V2.0
+
+
+<img width="845" alt="image" src="https://github.com/user-attachments/assets/6be6b38d-7a66-4d2a-825d-146042314a44" />
+
+
+This is slow deployment, But safe!
+
+
+<img width="559" alt="image" src="https://github.com/user-attachments/assets/2364294e-4f05-4117-ae79-d58982327039" />
+
+
+The deployment lifecycle events are succeeded!
+
+<img width="638" alt="image" src="https://github.com/user-attachments/assets/ac90ff07-e6aa-4fb0-8e68-c40e33e57e7b" />
+
+
+### Automated Rollback on In-Place Rolling Deployment Failure
+
+1. You're using CodeDeployDefault.OneAtATime strategy with 3 EC2 instances.
+
+2. Rollback is enabled (via deployment configuration or UI).
+
+3. CodeDeploy starts in-place deployment, updating one instance at a time.
+
+**❌ What Happens When the First Instance Fails?**
+
+1. CodeDeploy stops the deployment immediately.
+
+2. It does NOT proceed to the other 2 instances.
+
+3. It initiates rollback:
+
+```
+For the instance where the deployment failed → it will attempt to roll back to the last successful revision.
+The other 2 instances remain untouched, since they were not updated yet.
+```
+
+**To create a file in repo**
+
+deploy-scripts/simulate-failure.sh
+
+```
+#!/bin/bash
+
+echo "This script will fail"
+exit 1
+```
+
+To update the appspec file
+
+```
+version: 0.0
+os: linux
+files:
+  - source: dist/my-angular-project
+    destination: /var/www/my-angular-project
+permissions:
+  - object: /var/www/my-angular-project
+    pattern: '**'
+    mode: '0755'
+    owner: root
+    group: root
+    type:
+      - file
+      - directory
+hooks:
+  ApplicationStart:
+    - location: deploy-scripts/application-start-hook.sh
+      timeout: 300
+  ValidateService:
+    - location: deploy-scripts/simulate-failure.sh
+```
+
+To change the v4.0 in src/app/app.component.html
+
+Then commit the changes and Pipeline should trigger automatically! (This should get failed due to simulate-failure.sh file)
+
+Deployment lifecycle failed and others are skipped
+
+
+<img width="659" alt="image" src="https://github.com/user-attachments/assets/3dbd5107-0149-44c4-aa62-00a5f01a2ac3" />
+
+
+The new deployment started to deploy the latest successful revision to the failed instance
+
+
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/d4f97346-777f-4256-9594-eda89f3bd061" />
+
+
+Now, the last successful revision has been deployed to the failed instance
+
+
+<img width="650" alt="image" src="https://github.com/user-attachments/assets/841abd03-9e3f-425c-aa4a-46a7567b3075" />
+
 
