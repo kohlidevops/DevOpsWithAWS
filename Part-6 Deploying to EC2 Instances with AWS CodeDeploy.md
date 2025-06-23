@@ -1085,3 +1085,27 @@ Now, the last successful revision has been deployed to the failed instance
 <img width="650" alt="image" src="https://github.com/user-attachments/assets/841abd03-9e3f-425c-aa4a-46a7567b3075" />
 
 
+
+### Blue-Green Deployments With Auto Scaling & Load balancing
+
+To update Blue-Green deployment in Deployment group
+
+AWS > Code Deploy > Application > Your Application > Choose your Deployment Group (MyDeploymentAutoScalingGroup)
+
+
+<img width="681" alt="image" src="https://github.com/user-attachments/assets/e501da9b-c3fe-44d7-8a40-392067d72343" />
+
+
+Edit the Group
+
+Deployment type > Blue-Green Deployment
+
+Environment configuration > Automatically copy ASG Group
+
+Deployment settings > Traffic rerouting > Reroute traffic immediately
+
+Choose > Terminate the original instances in the deployment group
+
+Deployment configuration > CodeDeployDefault.AllAtOnce
+
+Leave others as it and save changes
