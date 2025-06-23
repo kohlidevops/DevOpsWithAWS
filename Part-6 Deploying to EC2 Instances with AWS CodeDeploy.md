@@ -737,5 +737,130 @@ If you check with the CloudWatch Loggroups
 <img width="890" alt="image" src="https://github.com/user-attachments/assets/71891d15-afd1-415c-8ec6-baaadb3e8025" />
 
 
+### Creating a Deployment Group with Auto Scaling & Load balancing
+
+
+**To create an Image for the MyDeployment EC2 instance**
+
+SSH to instance and clean up the webserver project using below command
+
+```
+ls -lh /var/www/my-angular-project/
+sudo rm -rf /var/www/my-angular-project/*
+```
+
+Then stop the instance and create an Image
+
+
+**To create a Launch Template**
+
+AWS > EC2 > Launch Template > Create a new Launch Template
+
+```
+name > MyDeploymentLaunchTeamplate
+Choose > Autoscaling guidance
+AMI > Choose you AMI
+Instance type > t2.micro
+Keypair > Choose your keypair
+Subnet > Dont include in this Launch Template
+Security group > Choose your EC2 instance SG
+IAM Instance profile > Choose your CodeDeployRole (Which is already associated with your EC2 instance)
+Lets create a Launch Template
+```
+
+
+<img width="563" alt="image" src="https://github.com/user-attachments/assets/13ea37a2-e967-4885-92dc-cf983b246116" />
+
+
+**To create a Security group for ALB**
+
+To create a Security group and add the inbout rule as Http with OpentoAnywhere
+
+
+**To create a Target group**
+
+```
+Target type > Instance
+Name > MyDeploymentTG-80
+Protocol > HTTP
+Port > 80
+VPC > Default
+Health check protocol > HTTP
+Health check path > /
+Next and Create a Target Group
+```
+
+**To create an Application Loadbalancer**
+
+```
+Load balancer name > MyDeploymentALB
+Scheme > Internet facing
+Load balancer IP address type > IPv4
+Network Mapping > Choose your VPC and all public subnets
+Security group > Choose your SG
+Listeners and Routing > HTTP | 80 | MyDeploymentTG-80
+Then create a Load balancer
+```
+
+**To create an Auto Scaling Group**
+
+```
+ASG name > MyDeployment-ASG
+Launch Template > Choose your Template
+Network > Choose your VPC and all availability zones
+Loadbalcing > Attach to an exisiting Load balancer > Select your Target Group
+Turn on ELB health checks
+Desired > 2 | Min > 2 | Max > 2
+Next > Next to Create an ASG
+```
+
+**To create a Deployment Group in CodeDeploy**
+
+AWS > CodeDeploy > Application > Choose your Application
+
+
+<img width="662" alt="image" src="https://github.com/user-attachments/assets/55c199ce-c6b9-4175-b8de-a43cfca9a04f" />
+
+
+```
+Create a new Deployment Group
+Name > MyDeploymentAutoScalingGroup
+Service Role > Choose your Service Role
+Deployment type > In-place
+Environment configuration > EC2 AutoScaling Group > Choose your ASG
+Deployment configuration > CodeDeployDefault.AllAtOnce
+Enable Load balancer > ALB > Choose your Target Group
+Then create a Deployment Group
+```
+
+
+<img width="647" alt="image" src="https://github.com/user-attachments/assets/aa6491c8-d4ea-411b-abae-e78c3cf2171e" />
+
+
+To update the Deploy Action in your CodePipeline
+
+AWS > CodePipeline > Choose your Pipeline
+
+
+<img width="856" alt="image" src="https://github.com/user-attachments/assets/e5c67159-a49c-441b-ad20-0b7dcf194a16" />
+
+
+```
+Edit > Your Pipeline
+Choose > Deploy Stage
+Edit > DeployToEC2Instance (Exisiting one)
+Deployment Group > MyDeploymentAutoScalingGroup (It should be new one which is created now in Deployment Group)
+Done > Done > Save Changes
+```
+
+Then Release the change to deploy everything on the EC2 ASG!
+
+
+<img width="839" alt="image" src="https://github.com/user-attachments/assets/c72a0c03-18b3-403b-9501-1afeaec8096e" />
+
+
+The CodePipeline deployed the webapp on the EC2 ASG instances successfully!
+
+
 
 
