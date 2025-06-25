@@ -1146,5 +1146,30 @@ New version has been deployed
 <img width="856" alt="image" src="https://github.com/user-attachments/assets/7dfb089c-5a03-4712-b87d-ca1f40c8c256" />
 
 
+### If Deployment Fails — What Happens?
+
+When your Blue-Green deployment fails in CodeDeploy with ASG:
+
+**🔁 1. Rollback is triggered automatically**
+
+The green environment is discarded
+
+Traffic is routed back to the blue environment
+
+Your old ASG (blue) stays active
+
+**💡 2. Blue ASG remains healthy**
+
+The Auto Scaling group for the previous environment is preserved
+
+No traffic is sent to the failed green instances
+
+**🛑 3. Failed Green Environment is Terminated**
+
+CodeDeploy automatically terminates the green ASG and EC2 instances (if configured)
+
+If not configured, then environment should be idle - So you can logon to the instance and check the logs if required
+
+No manual cleanup is needed — unless you've overridden defaults
 
 
