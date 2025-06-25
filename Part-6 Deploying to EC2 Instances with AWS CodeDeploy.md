@@ -1,7 +1,8 @@
-# Deploying to EC2 Instances with AWS CodeDeploy
+# Scalable and Zero-Downtime with Blue-Green Deployment with GitHub, CodeBuild, CodeDeploy and CodePipeline
 
 
-![image](https://github.com/user-attachments/assets/877c9c83-1e7a-4470-81ff-3e50ad147edb)
+![image](https://github.com/user-attachments/assets/53a53742-b53e-4153-a291-aec7a7cf2a0f)
+
 
 
 ## What is CodeDeploy?
