@@ -288,5 +288,24 @@ The Docker image successfully pushed into the AWS ECR repo
 <img width="643" height="163" alt="image" src="https://github.com/user-attachments/assets/9bb84798-005a-404d-b06b-2d5dd017b05a" />
 
 
+## To create a Task definition
 
+AWS > ECS > Task definition > Create a new Task definition
+
+```
+Task definition family > name > myweb
+Infrastructure requirements > Launch type > AWS Fargate and Amazon EC2 instances
+Operating system/Architecture > Linux/X86_64
+CPU > .5 vCPU and Memory > 1 GB
+Container > Name > myweb
+Image URI > 1234567890.dkr.ecr.ap-south-1.amazonaws.com/myweb:latest
+Container port > 80
+Protocol > TCP
+Then create a Task definition
+```
+
+<img width="629" height="160" alt="image" src="https://github.com/user-attachments/assets/04ca84d7-f5cc-44d1-a541-1067d17e1087" />
+
+
+## To create a ECS Cluster
 
