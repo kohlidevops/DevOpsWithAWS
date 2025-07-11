@@ -156,6 +156,137 @@ The pipeline will trigger automatically once the buildspec updated in codecommit
 <img width="620" height="267" alt="image" src="https://github.com/user-attachments/assets/4cc74f96-a827-46ec-869f-dc1b79b5c861" />
 
 
+### To create a Parameter store as environment variable for CodeBuild project
+
+AWS > SSM > Parameter store > Create parameter
+
+```
+Name > /dockerhub/token
+Tier > Standard
+Type > SecureString
+Value > **************
+Create parameter
+
+Name > /dockerhub/user
+Tier > Standard
+Type > SecureString
+Value > latchudevops
+Create parameter
+```
+
+
+<img width="795" height="263" alt="image" src="https://github.com/user-attachments/assets/ea1a9a76-cc24-4f61-8f30-510a313a294f" />
+
+
+### To add an IAM policy to CodeBuild project role
+
+Navigate to your CodeBuild project IAM role > Edit > Add in-line policy
+
+```
+Service > Systems Manager
+Action > Read > GetParameters
+Resource > Add ARN > arn:aws:ssm:ap-south-1:1234567890:parameter/dockerhub/*
+Name it and create a policy
+```
+
+### To update the buildspec file for parameter store
+
+```
+version: 0.2
+env:
+  parameter-store:
+    DOCKERHUB_TOKEN: /dockerhub/token
+    DOCKERHUB_USER: /dockerhub/user
+phases:
+  pre_build:
+    commands:
+      - echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USER} --password-stdin
+  build:
+    commands:
+      - docker build -t my-angular-app:latest .
+  post_build:
+    commands:
+      - docker tag my-angular-app:latest ${DOCKERHUB_USER}/my-angular-app:latest
+      - docker push ${DOCKERHUB_USER}/my-angular-app:latest
+```
+
+The pipeline will trigger automatically once the buildspec updated in codecommit repository.
+
+
+<img width="665" height="281" alt="image" src="https://github.com/user-attachments/assets/770dc7c0-3f8a-4efa-8864-7f6b2c36adb2" />
+
+## Pushing the Docker Image to the AWS ECR
+
+
+<img width="1089" height="439" alt="image" src="https://github.com/user-attachments/assets/bd27541a-ccca-40e7-baa6-1e1b1e90e9ce" />
+
+
+### To update the IAM policy to the CodeBuild project role
+
+Navigate to your CodeBuild project IAM role > Edit > Add in-line policy > Choose Json > place the below policy > Name it and create a policy
+
+```
+https://github.com/kohlidevops/DevOpsWithAWS/blob/main/codebuild-ecr-policy.json
+```
+
+### To add the environment variable into the CodeBuild environment
+
+AWS > CodeBuild > Choose your project > Edit
+
+Add Environment variables > Name > AWS_ACCOUNT_ID and Value > 1234567890
+
+Then update the project
+
+
+### To create a ECR repo
+
+To create a private repository in ECR
+
+
+<img width="643" height="162" alt="image" src="https://github.com/user-attachments/assets/f4a6e552-2268-407c-9586-4da088f51a9f" />
+
+
+### To update buildspec file to pushing image to the ECR
+
+```
+version: 0.2
+env:
+  variables:
+    ECR_REPO_NAME: myweb
+  parameter-store:
+    DOCKERHUB_TOKEN: /dockerhub/token
+    DOCKERHUB_USER: /dockerhub/user
+phases:
+  pre_build:
+    commands:
+      # Docker Hub login
+      - echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USER} --password-stdin 
+      
+      # ECR login
+      - ECR_MAIN_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_MAIN_URI}
+
+      - ECR_IMAGE_URI="${ECR_MAIN_URI}/${ECR_REPO_NAME}:latest"
+  build:
+    commands:
+      - docker build -t my-angular-app:latest .
+  post_build:
+    commands:
+      - docker tag my-angular-app:latest ${ECR_IMAGE_URI}
+      - docker push ${ECR_IMAGE_URI}
+```
+
+The pipeline will trigger automatically once the buildspec updated in codecommit repository.
+
+
+<img width="743" height="257" alt="image" src="https://github.com/user-attachments/assets/15bde7b6-9b92-4441-8b42-c1b4006788ba" />
+
+
+The Docker image successfully pushed into the AWS ECR repo
+
+
+<img width="643" height="163" alt="image" src="https://github.com/user-attachments/assets/9bb84798-005a-404d-b06b-2d5dd017b05a" />
+
 
 
 
