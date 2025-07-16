@@ -564,6 +564,7 @@ If you check with the ALB URL, the new version is updated
 
 What if the deployment fails and our ECS service scale-out to more tasks after that. In that case, our new tasks will try to run the new failed Docker image. Because the latest tag start pointing to the failed docker image after the build stage is completed in our pipeline even before the ECS deployment starts. So is there anyway to tag your Docker images differently to prevent this from happening?
 
+
 To update the buildspec file
 
 ```
@@ -601,6 +602,23 @@ artifacts:
     - imagedefinitions.json
 ```
 
+```
+CodeBuild sets CODEBUILD_RESOLVED_SOURCE_VERSION=abc123de90f...
+The resulting Docker image tag is :abc123de
+You push this to ECR and deploy via ECS or Fargate
+If something breaks, you can roll back to the previously tagged image (e.g., :789def45)
+```
+
 To update the version 3.0 in src/app/app.component.html
 
 Then Pipeline should trigger automatically and deployment has been succeeded!
+
+
+<img width="687" height="257" alt="image" src="https://github.com/user-attachments/assets/d007c45d-2f23-46cf-833f-f2aea1cb2aaf" />
+
+
+The version too updated!
+
+
+<img width="742" height="269" alt="image" src="https://github.com/user-attachments/assets/4b405a80-2cec-44fc-836c-ebbc6af12c3d" />
+
