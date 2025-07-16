@@ -489,6 +489,78 @@ Automatically routes traffic only to healthy tasks.
 Ensures users always reach a functional backend, avoiding downtime or broken sessions.
 ```
 
+### To add the Deploy ECS stage into the Pipeline
+
+AWS > Pipeline > Choose your Pipeline > Edit > Add the Stage after the Build stage
+
+Add the Stage > Stage name > DeployToECS > Add stage > Then Add Action Group
+
+```
+Action name > DeployToECS
+Action provider > Amazon ECS
+Region > Choose your region
+Input artifacts > BuildArtifact
+Cluster name > Choose your cluster
+Service name > Choose your service
+Image definitions file > imagedefinitions.json
+Done > Done > Save the Pipeline
+```
+  
+So CodeBuild Artifacts doesnot provide the imagedefinitions file needed by our ECS. So we have to update the buildspec file.
+
+To add the ECS_FullAccess policy to the Code Pipeline service role
+
+To update the buildspec file
+
+```
+version: 0.2
+env:
+  variables:
+    ECR_REPO_NAME: myweb
+  parameter-store:
+    DOCKERHUB_TOKEN: /dockerhub/token
+    DOCKERHUB_USER: /dockerhub/user
+phases:
+  pre_build:
+    commands:
+      # Docker Hub login
+      - echo ${DOCKERHUB_TOKEN} | docker login -u ${DOCKERHUB_USER} --password-stdin 
+      
+      # ECR login
+      - ECR_MAIN_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_MAIN_URI}
+
+      - ECR_IMAGE_URI="${ECR_MAIN_URI}/${ECR_REPO_NAME}:latest"
+  build:
+    commands:
+      - docker build -t my-angular-app:latest .
+  post_build:
+    commands:
+      - docker tag my-angular-app:latest ${ECR_IMAGE_URI}
+      - docker push ${ECR_IMAGE_URI}
+
+      # Generate image definitions file for ECS
+      - printf '[{"name":"myweb","imageUri":"%s"}]' ${ECR_IMAGE_URI} > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+```
+
+To update the version 2.0 in src/app/app.component.html
+
+Then Pipeline should trigger automatically and deployment has been succeeded!
 
 
+<img width="806" height="290" alt="image" src="https://github.com/user-attachments/assets/c4eed8ba-a5b9-4583-9a87-96175a61cccf" />
+
+
+If you check with the ALB URL, the new version is updated
+
+
+<img width="740" height="267" alt="image" src="https://github.com/user-attachments/assets/f5e8e0ba-1964-4aca-b339-37264dfe12a9" />
+
+
+
+What if the deployment fails and our ECS service scale-out to more tasks after that. In that case, our new tasks will try to run the new failed Docker image. Because the latest tag start pointing to the failed docker image after the build stage is completed in our pipeline even before the ECS deployment starts. So is there anyway to tag your Docker images differently to prevent this from happening?
 
