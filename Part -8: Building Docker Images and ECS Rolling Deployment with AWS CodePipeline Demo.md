@@ -309,3 +309,89 @@ Then create a Task definition
 
 ## To create a ECS Cluster
 
+AWS > ECS > Cluster > Create a new Cluster
+
+```
+Cluster Name > my-cluster
+Infrastructure > AWS Fargate Serverless
+Choose > Amazon EC2 instances too
+Autoscaling > Create a new ASG
+Provisioning model > On-demand
+EC2 instance type > t3.micro
+EC2 instance role > Create a new role
+Min > 0 and Max > 5
+SSH > None
+Networking > Choose your VPC and its public subnets
+Security group > Use an existing SG
+Create a Cluster
+```
+
+The cluster has been created
+
+
+<img width="765" height="208" alt="image" src="https://github.com/user-attachments/assets/d5079ab1-6571-4f4f-a8fb-e2203b4b9609" />
+
+If you check the Infrastructure option inside your cluster, then there are 3 capacity providers added such as FARGATE, FARGATE_SPOT and EC2 ASG group.
+
+## To Cretate an ECS Service on Fargate for Rolling Deployment
+
+AWS > ECS > Choose your Cluster > Select > Service > Create a Service
+
+```
+Task definition family > myweb
+Task definition revision > 1 $LATEST
+Service name > my-rolling-service
+Compute configuration > Compute option > Capacity provider strategy > Use custom (Advanced)
+Capacity provider > FARGATE
+Platform version > LATEST
+Deployment configuration > Service type > Replica
+Desired task > 2
+Health check grace period > 0
+Deployment option > Deployment type > Rolling update
+Min running tasks > 100
+Max running tasks > 200
+Deployment failure detection > Unselect > Use the Amazon ECS deployment circuit breaker and Rollback on failure
+Networking > Choose your VPC and subnets
+Secutiy group > Use an exisiting SG
+Public IP > Turned on
+Loadbalancing > Use Load balancing
+VPC > Choose your VPC
+Type > ALB
+my container > myweb 80 : 80
+Application Load Balancer > create a new ALB
+Load balancer name > my-rolling-service-alb
+Listener > Create new listener > Port 80 | Protocol HTTP
+Target group > Create a new TG
+TG name > my-rolling-service-target-group
+Protocol > HTTP
+Port > 80
+Degregistration delay > 300
+Heaṭch check protocol > HTTP
+Health check path > /
+Create a Service
+```
+
+The Service is created with what we have configured
+
+
+<img width="656" height="239" alt="image" src="https://github.com/user-attachments/assets/9d1a0354-7524-4787-9492-8f9e6f2d04d9" />
+
+To create a new security group for ALB with All traffic allow anywhere and associate with ALB
+
+To allow All traffic anywhere to ASG associated security group
+
+To change the Deregistration delay from 300 to 30 seconds - Because our target group will wait at least 5 mins to drain the existing connection on the ECS tasks before deregistering them.
+
+If you hit the ALB URL then you should can access the site
+
+
+<img width="835" height="386" alt="image" src="https://github.com/user-attachments/assets/2c1879a5-157f-4439-8413-8d511184a6fc" />
+
+
+
+
+
+
+
+
+
