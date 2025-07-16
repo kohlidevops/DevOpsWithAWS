@@ -388,9 +388,106 @@ If you hit the ALB URL then you should can access the site
 <img width="835" height="386" alt="image" src="https://github.com/user-attachments/assets/2c1879a5-157f-4439-8413-8d511184a6fc" />
 
 
+### Adding an Amazon ECS Standard Deploy Action to Your Pipelibne
+
+**What we Build?**
 
 
+<img width="1027" height="449" alt="image" src="https://github.com/user-attachments/assets/6eb72026-20b9-43db-bbb1-136ffa18dfcd" />
 
+
+**🔄 Pipeline Flow Breakdown**
+
+**1. 👩‍💻 Developer Pushes Code**
+
+```
+A developer commits and pushes code to AWS CodeCommit (Git repository).
+This triggers AWS CodePipeline.
+```
+
+**2. 📦 CodePipeline - Source Stage**
+
+```
+CodePipeline fetches the source artifact from CodeCommit.
+This artifact is passed to the next stage for build.
+```
+
+**3. 🔧 CodeBuild - Build Stage**
+
+```
+AWS CodeBuild compiles the application and builds a Docker image.
+It creates a build artifact (e.g., updated task definition).
+```
+
+**4. 📤 Push to Amazon ECR**
+
+```
+The Docker image is pushed to Amazon Elastic Container Registry (ECR) for storage and future deployment.
+```
+
+**5. 📄 Task Definition Update**
+
+```
+The new image version is referenced in a new ECS task definition revision (e.g., Rev. 2).
+```
+
+**6. 🚀 ECS Deployment**
+
+```
+Amazon ECS pulls the updated image from ECR.
+A rolling update strategy ensures minimal downtime.
+The ECS service is updated to use the new task definition.
+```
+
+**How do ECS standard deployments work?**
+
+
+<img width="488" height="212" alt="image" src="https://github.com/user-attachments/assets/3c497e5d-ebbc-4d46-ad88-a9f013275bde" />
+
+
+**🧩 Component Breakdown**
+
+**1. 🟧 ECS Service**
+
+```
+Manages the deployment and ensures the desired number of tasks are running.
+Handles deployments by replacing old tasks with new ones (rolling update).
+```
+
+**2. 📦 Task Definition**
+
+```
+A blueprint describing how to run containers (e.g., Docker image, port, CPU, memory).
+Each task runs a specific revision (e.g., rev 1, rev 2).
+```
+
+**3. 🛠️ Deployment 1: rev 1**
+
+```
+The current active deployment.
+All tasks here use the old version of the container image/config.
+```
+
+**4. 🆕 Deployment 2: rev 2**
+
+```
+The new version being rolled out.
+ECS launches new tasks with updated settings.
+```
+
+**5. 🔄 Rolling Deployment**
+
+```
+ECS replaces old tasks (rev 1) with new ones (rev 2) gradually.
+As tasks become healthy, ECS deregisters old ones and registers new ones with the ALB.
+```
+
+**6. 🌐 Application Load Balancer (ALB)**
+
+```
+Automatically routes traffic only to healthy tasks.
+Ensures users always reach a functional backend, avoiding downtime or broken sessions.
+```
 
 
 
