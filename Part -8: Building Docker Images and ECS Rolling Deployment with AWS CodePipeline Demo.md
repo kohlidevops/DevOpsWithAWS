@@ -638,3 +638,130 @@ CodePipeline commit ID
 
 
 If our deployments rollback for some reason, this will prevent our ECS from launching the faulty image using the latest tag. Because each image tag on the task definition revisions will be unique
+
+As of now our Dockerfile look like below
+
+```
+# syntax=docker/dockerfile:1
+
+# STAGE 1: Build the Angular project
+FROM node:20 AS builder
+
+# Install Angular CLI
+RUN npm install -g @angular/cli@17
+
+# Change my working directory to a custom folder created for the project
+WORKDIR /my-project
+
+# Copy everything from the current folder (except the ones in .dockerignore) 
+# into my working directory on the image
+COPY . .
+
+# Install dependencies and build my Angular project
+RUN npm install && ng build -c production
+
+
+# STAGE 2: Build the final deployable image
+FROM nginx:1.25
+
+# Allow the HTTP port needed by the Nginx server for connections
+EXPOSE 80
+
+# Copy the generated static files from the builder stage
+# to the Nginx server's default folder on the image
+COPY --from=builder /my-project/dist/my-angular-project /usr/share/nginx/html
+```
+
+Here we are using Docker repository to pull the image and we login to the Dockerhub and no longer to send the images to the repo - Why because? To avoid the pulling limit.
+
+Now, we are going to use AWS ECR public repository instead of the Docker repo.
+
+
+### Using ECR Public Gallery in Your Docker Builds
+
+**To update your Dockerfile like below**
+
+```
+# syntax=docker/dockerfile:1
+
+# STAGE 1: Build the Angular project
+FROM public.ecr.aws/docker/library/node:20 AS builder
+
+# Install Angular CLI
+RUN npm install -g @angular/cli@17
+
+# Change my working directory to a custom folder created for the project
+WORKDIR /my-project
+
+# Copy everything from the current folder (except the ones in .dockerignore) 
+# into my working directory on the image
+COPY . .
+
+# Install dependencies and build my Angular project
+RUN npm install && ng build -c production
+
+
+# STAGE 2: Build the final deployable image
+FROM public.ecr.aws/docker/library/nginx:1.25
+
+# Allow the HTTP port needed by the Nginx server for connections
+EXPOSE 80
+
+# Copy the generated static files from the builder stage
+# to the Nginx server's default folder on the image
+COPY --from=builder /my-project/dist/my-angular-project /usr/share/nginx/html
+```
+
+**To update the buildspec file (We dont need Docker login and docker related environment variables in buildspec file)**
+
+```
+version: 0.2
+env:
+  variables:
+    ECR_REPO_NAME: myweb
+phases:
+  pre_build:
+    commands:
+      # ECR Public Gallery login
+      - aws ecr-public get-login-password --region us-east-1 | docker login -u AWS --password-stdin public.ecr.aws
+      
+      # ECR login
+      - ECR_MAIN_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
+      - aws ecr get-login-password --region ${AWS_REGION} | docker login -u AWS --password-stdin ${ECR_MAIN_URI}
+
+      - ECR_IMAGE_URI="${ECR_MAIN_URI}/${ECR_REPO_NAME}:${CODEBUILD_RESOLVED_SOURCE_VERSION:0:8}"
+  build:
+    commands:
+      - docker build -t my-angular-app:latest .
+  post_build:
+    commands:
+      - docker tag my-angular-app:latest ${ECR_IMAGE_URI}
+      - docker push ${ECR_IMAGE_URI}
+
+      # Generate image definitions file for ECS
+      - printf '[{"name":"myweb","imageUri":"%s"}]' ${ECR_IMAGE_URI} > imagedefinitions.json
+
+artifacts:
+  files:
+    - imagedefinitions.json
+```
+
+**To add the ECR Read access to the CodeBuild Service role**
+
+CodeBuild > Service role > Attach policy > ElasticContainerRegistryPublicReadOnly > add it
+
+Now CodeBuild can access the ECR public gallery
+
+To update the version 4.0 in src/app/app.component.html
+
+Now commit all the changes to check the CodePipeline - The Pipeline is succeeded
+
+
+<img width="831" height="344" alt="image" src="https://github.com/user-attachments/assets/084079f5-fa90-41fb-9fef-5bd88d170175" />
+
+
+As a result, the version has been changed into the application
+
+
+<img width="871" height="410" alt="image" src="https://github.com/user-attachments/assets/52603ee7-0974-45aa-b98f-905c3f2b70dd" />
+
