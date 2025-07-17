@@ -768,7 +768,7 @@ As a result, the version has been changed into the application
 
 ### What If Your ECS Rolling Deployment Fails ?
 
-**To update the buildspec file - I just comment the nginx and added the ubunut in stage-2 build as it should failed to serve traffic**
+**To update the Dockerfile - I just comment the nginx and added the ubuntu in stage-2 build as it should failed to serve traffic**
 
 ```
 # syntax=docker/dockerfile:1
@@ -863,3 +863,74 @@ The version too updated
 
 
 ### Enabling Automated Rollbacks on ECS Rolling Deployment
+
+To enable the Deployment failure detection by updating Service in ECS
+
+To ensure both option enable under the Deployment failure detection > Update
+
+
+<img width="640" height="194" alt="image" src="https://github.com/user-attachments/assets/2ca9d9d7-fefd-4511-ba4d-15e8b792e693" />
+
+
+**To update the Dockerfile - I just comment the nginx and added the ubuntu in stage-2 build as it should failed to serve traffic**
+
+```
+# syntax=docker/dockerfile:1
+
+# STAGE 1: Build the Angular project
+FROM public.ecr.aws/docker/library/node:20 AS builder
+
+# Install Angular CLI
+RUN npm install -g @angular/cli@17
+
+# Change my working directory to a custom folder created for the project
+WORKDIR /my-project
+
+# Copy everything from the current folder (except the ones in .dockerignore) 
+# into my working directory on the image
+COPY . .
+
+# Install dependencies and build my Angular project
+RUN npm install && ng build -c production
+
+
+# STAGE 2: Build the final deployable image
+# FROM public.ecr.aws/docker/library/nginx:1.25
+FROM public.ecr.aws/docker/library/ubuntu
+
+# Allow the HTTP port needed by the Nginx server for connections
+EXPOSE 80
+
+# Copy the generated static files from the builder stage
+# to the Nginx server's default folder on the image
+COPY --from=builder /my-project/dist/my-angular-project /usr/share/nginx/html
+```
+
+To update the version 6.0 in src/app/app.component.html
+
+Now commit all the changes to check the CodePipeline - The Pipeline started
+
+The Pipeline was failed after some number of attempt to register the task.
+
+
+<img width="829" height="344" alt="image" src="https://github.com/user-attachments/assets/da9b1d4f-acba-46ee-9515-2107378adc91" />
+
+
+As a result, the traffice will serve to version 5.0
+
+
+<img width="853" height="416" alt="image" src="https://github.com/user-attachments/assets/59973abb-6cf3-4b72-a0c6-4e49f153062b" />
+
+
+**To update the Dockerfile - I just uncomment the nginx and comment the ubuntu in stage-2 build as it should failed to serve traffic**
+
+The pipeline should trigger automatically - The deployment succeeded and version has been updated!
+
+
+<img width="826" height="404" alt="image" src="https://github.com/user-attachments/assets/fc75b458-dce5-4d68-a63f-998abb14d414" />
+
+
+
+
+
+
