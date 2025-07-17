@@ -763,6 +763,9 @@ Now commit all the changes to check the CodePipeline - The Pipeline is succeeded
 As a result, the version has been changed into the application
 
 
+<img width="871" height="410" alt="image" src="https://github.com/user-attachments/assets/52603ee7-0974-45aa-b98f-905c3f2b70dd" />
+
+
 ### What If Your ECS Rolling Deployment Fails ?
 
 **To update the buildspec file - I just comment the nginx and added the ubunut in stage-2 build as it should failed to serve traffic**
@@ -801,5 +804,62 @@ COPY --from=builder /my-project/dist/my-angular-project /usr/share/nginx/html
 
 To update the version 5.0 in src/app/app.component.html
 
-<img width="871" height="410" alt="image" src="https://github.com/user-attachments/assets/52603ee7-0974-45aa-b98f-905c3f2b70dd" />
+Now commit all the changes to check the CodePipeline - The Pipeline started
 
+For ECS deployment, it is continuously register and deregister the task
+
+
+<img width="711" height="294" alt="image" src="https://github.com/user-attachments/assets/669ce337-3956-4e76-97d9-f140c3042fd9" />
+
+
+In ECS > Service > Deployment - we intentionally disabled the Deployment circuit breaker and Deployment rollback. As a result, new tasks couldnot pass the loadbalncer healthchecks. So our ECS rolling deployment starts and stops new tasks.- 
+
+If we enabled the settings - These settings enable you to fail your ECS rolling deployments after reaching a failure threshold and roll them back.
+
+To resolve this first stop and abondon the CodePipeline using Stop execution and update the Dockerfile as below - To uncomment the nginx and comment the ubuntu in stage-2
+
+```
+# syntax=docker/dockerfile:1
+
+# STAGE 1: Build the Angular project
+FROM public.ecr.aws/docker/library/node:20 AS builder
+
+# Install Angular CLI
+RUN npm install -g @angular/cli@17
+
+# Change my working directory to a custom folder created for the project
+WORKDIR /my-project
+
+# Copy everything from the current folder (except the ones in .dockerignore) 
+# into my working directory on the image
+COPY . .
+
+# Install dependencies and build my Angular project
+RUN npm install && ng build -c production
+
+
+# STAGE 2: Build the final deployable image
+FROM public.ecr.aws/docker/library/nginx:1.25
+# FROM public.ecr.aws/docker/library/ubuntu
+
+# Allow the HTTP port needed by the Nginx server for connections
+EXPOSE 80
+
+# Copy the generated static files from the builder stage
+# to the Nginx server's default folder on the image
+COPY --from=builder /my-project/dist/my-angular-project /usr/share/nginx/html
+```
+
+Then commit the changes and to trigger the Pipeline - It is succeeded
+
+
+<img width="818" height="322" alt="image" src="https://github.com/user-attachments/assets/52c6e8b5-f847-441e-b58f-fe49085214e2" />
+
+
+The version too updated
+
+
+<img width="839" height="399" alt="image" src="https://github.com/user-attachments/assets/df1bcc3d-3c8d-4a74-8bb5-14e5eef2c5a8" />
+
+
+### Enabling Automated Rollbacks on ECS Rolling Deployment
