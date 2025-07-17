@@ -622,3 +622,19 @@ The version too updated!
 
 <img width="742" height="269" alt="image" src="https://github.com/user-attachments/assets/4b405a80-2cec-44fc-836c-ebbc6af12c3d" />
 
+
+If you navigate to ECS > Deployments > Service revisions (latest one) - The tag image URI of the container is same as the commit ID of the CodePipeline and Github.
+
+Container image URI
+
+
+<img width="514" height="178" alt="image" src="https://github.com/user-attachments/assets/a64c208a-7bb4-4112-aea3-560c4bb0ed2b" />
+
+
+CodePipeline commit ID
+
+
+<img width="710" height="227" alt="image" src="https://github.com/user-attachments/assets/1b438c63-7113-404e-8f25-e3248cd2b774" />
+
+
+If our deployments rollback for some reason, this will prevent our ECS from launching the faulty image using the latest tag. Because each image tag on the task definition revisions will be unique
