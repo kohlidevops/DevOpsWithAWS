@@ -930,6 +930,31 @@ The pipeline should trigger automatically - The deployment succeeded and version
 <img width="826" height="404" alt="image" src="https://github.com/user-attachments/assets/fc75b458-dce5-4d68-a63f-998abb14d414" />
 
 
+### Min & Max Running Tasks in ECS Rolling
+
+AWS > ECS > Service > update
+
+```
+Desired tasks > from 2 to 3
+Min running tasks % > 50
+Max running tasks % > 150
+```
+
+3 tasks started
+
+<img width="623" height="256" alt="image" src="https://github.com/user-attachments/assets/569f3f0c-ee68-41ce-bad3-75c7efe3d5d7" />
+
+To update the version 7.0 in src/app/app.component.html
+
+Now commit all the changes to check the CodePipeline - The Pipeline started
+
+
+<img width="849" height="338" alt="image" src="https://github.com/user-attachments/assets/5a64a5a5-3822-4062-bfdd-f7359071048d" />
+
+
+### To delete the ECS Service
+
+From ECS console if you delete the Service then it may delete the resources that by created manually. The best way to delete the ECS - Just navigate to the CFT and delete the ECS which description should have "The template used to create an ECS Service from the ECS Console" > Select > Delete it
 
 
 
